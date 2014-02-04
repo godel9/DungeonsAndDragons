@@ -118,8 +118,7 @@ SizeModifierTable = {
 	'Diminutive': 4,
 	'Fine': 8,
 }
-SizesList = SizeModifierTable.keys()
-
+SizesList = ['Fine','Diminutive','Tiny','Small','Medium','Large','Huge','Gargantuan','Colossal']
 #Race:
 #	AbilityModifier <Dict>
 #	Effects <List>
