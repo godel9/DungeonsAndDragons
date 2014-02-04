@@ -1,0 +1,42 @@
+{
+"Fighter": {
+    "AbilityPriority": [
+        "STR",
+        "CON",
+        "DEX",
+        "INT",
+        "CAR",
+	"WIS"
+    ],
+    "SkillRank": 2,
+    "StartingWealth": "10*5d6",
+    "BaseAttackBonus": [
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10
+    ],
+    "ClassSkills": [
+        "Climb",
+        "Craft",
+        "Handle_Animal",
+        "Intimidate",
+        "Knowledge_Dungeoneering",
+        "Knowledge_Engineering",
+        "Profession",
+        "Ride",
+        "Survival",
+        "Swim"
+    ],
+    "WeaponProficiency": [
+	"Simple",
+	"Martial"
+    ]
+}
+}

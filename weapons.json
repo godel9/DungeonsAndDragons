@@ -1,0 +1,445 @@
+{
+    "Longsword": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 4, 
+        "Critical": "19-20/x2", 
+        "DamageType": "S", 
+        "Price": 15, 
+        "Special": []
+    }, 
+    "Bardiche": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d10", 
+        "DamageSmall": "1d8", 
+        "Weight": 14, 
+        "Critical": "19-20/x2", 
+        "DamageType": "S", 
+        "Price": 13, 
+        "Special": [
+            "Brace", 
+            "Reach"
+        ]
+    }, 
+    "Bayonet": {
+        "Proficiency": "Simple", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 1, 
+        "Critical": "x2", 
+        "DamageType": "P", 
+        "Price": 5, 
+        "Special": []
+    }, 
+    "Greataxe": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d12", 
+        "DamageSmall": "1d10", 
+        "Weight": 12, 
+        "Critical": "x3", 
+        "DamageType": "S", 
+        "Price": 20, 
+        "Special": []
+    }, 
+    "Shortsword": {
+        "Proficiency": "Martial", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 2, 
+        "Critical": "19-20/x2", 
+        "DamageType": "P", 
+        "Price": 10, 
+        "Special": []
+    }, 
+    "Scimitar": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 4, 
+        "Critical": "18-20/x2", 
+        "DamageType": "S", 
+        "Price": 15, 
+        "Special": []
+    }, 
+    "Battleaxe": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 6, 
+        "Critical": "x3", 
+        "DamageType": "S", 
+        "Price": 10, 
+        "Special": []
+    }, 
+    "Greatsword": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "2d6", 
+        "DamageSmall": "1d10", 
+        "Weight": 8, 
+        "Critical": "19-20/x2", 
+        "DamageType": "S", 
+        "Price": 50, 
+        "Special": []
+    }, 
+    "LightFlail": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 6, 
+        "Critical": "x4", 
+        "DamageType": "B", 
+        "Price": 8, 
+        "Special": [
+            "Disarm", 
+            "Trip"
+        ]
+    }, 
+    "Glaive": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d10", 
+        "DamageSmall": "1d8", 
+        "Weight": 10, 
+        "Critical": "x3", 
+        "DamageType": "S", 
+        "Price": 8, 
+        "Special": [
+            "Reach"
+        ]
+    }, 
+    "Rapier": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 2, 
+        "Critical": "18-20/x2", 
+        "DamageType": "P", 
+        "Price": 20, 
+        "Special": []
+    }, 
+    "Club": {
+        "Proficiency": "Simple", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 3, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 0, 
+        "Range": 10, 
+        "Special": []
+    }, 
+    "HeavyFlail": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d10", 
+        "DamageSmall": "1d8", 
+        "Weight": 10, 
+        "Critical": "19-20/x2", 
+        "DamageType": "B", 
+        "Price": 15, 
+        "Special": [
+            "Disarm", 
+            "Trip"
+        ]
+    }, 
+    "Handaxe": {
+        "Proficiency": "Martial", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 3, 
+        "Critical": "19-20/x2", 
+        "DamageType": "S", 
+        "Price": 6, 
+        "Special": []
+    }, 
+    "Trident": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 4, 
+        "Critical": "x2", 
+        "DamageType": "P", 
+        "Price": 15, 
+        "Range": 10, 
+        "Special": [
+            "Brace"
+        ]
+    }, 
+    "Shortspear": {
+        "Proficiency": "Simple", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 3, 
+        "Critical": "x2", 
+        "DamageType": "P", 
+        "Price": 1, 
+        "Range": 20, 
+        "Special": []
+    }, 
+    "LightCrossbow": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Ranged", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 4, 
+        "Critical": "19-20/x2", 
+        "DamageType": "P", 
+        "Price": 35, 
+        "Range": 80, 
+        "Special": []
+    }, 
+    "Gauntlet": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d3", 
+        "DamageSmall": "1d2", 
+        "Weight": 1, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 2, 
+        "Special": []
+    }, 
+    "HeavyCrossbow": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Ranged", 
+        "DamageMedium": "1d10", 
+        "DamageSmall": "1d8", 
+        "Weight": 8, 
+        "Critical": "19-20/x2", 
+        "DamageType": "P", 
+        "Price": 50, 
+        "Range": 120, 
+        "Special": []
+    }, 
+    "Halberd": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d10", 
+        "DamageSmall": "1d8", 
+        "Weight": 12, 
+        "Critical": "x3", 
+        "DamageType": "PS", 
+        "Price": 10, 
+        "Special": [
+            "Brace", 
+            "Trip"
+        ]
+    }, 
+    "Morningstar": {
+        "Proficiency": "Simple", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 3, 
+        "Critical": "x2", 
+        "DamageType": "P", 
+        "Price": 8, 
+        "Range": 20, 
+        "Special": []
+    }, 
+    "BrassKnuckles": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d3", 
+        "DamageSmall": "1d2", 
+        "Weight": 4, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 1, 
+        "Special": []
+    }, 
+    "Kukri": {
+        "Proficiency": "Martial", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d4", 
+        "DamageSmall": "1d3", 
+        "Weight": 2, 
+        "Critical": "18-20/x2", 
+        "DamageType": "S", 
+        "Price": 8, 
+        "Special": []
+    }, 
+    "QuarterStaff": {
+        "Proficiency": "Simple", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d6/1d6", 
+        "DamageSmall": "1d4/1d4", 
+        "Weight": 4, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 0, 
+        "Special": [
+            "Double"
+        ]
+    }, 
+    "HeavyMace": {
+        "Proficiency": "Simple", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 8, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 12, 
+        "Special": []
+    }, 
+    "Gladius": {
+        "Proficiency": "Martial", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 3, 
+        "Critical": "19-20/x2", 
+        "DamageType": "PS", 
+        "Price": 15, 
+        "Special": []
+    }, 
+    "Warhammer": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 5, 
+        "Critical": "x3", 
+        "DamageType": "B", 
+        "Price": 12, 
+        "Special": []
+    }, 
+    "Longspear": {
+        "Proficiency": "Simple", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": 9, 
+        "Critical": "x3", 
+        "DamageType": "P", 
+        "Price": 5, 
+        "Special": [
+            "Brace", 
+            "Reach"
+        ]
+    }, 
+    "Dagger": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d4", 
+        "DamageSmall": "1d3", 
+        "Weight": 1, 
+        "Critical": "19-20/x2", 
+        "DamageType": "PS", 
+        "Price": 2, 
+        "Special": []
+    }, 
+    "SwordCane": {
+        "Proficiency": "Martial", 
+        "Encumberance": "OneHanded", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 4, 
+        "Critical": "x2", 
+        "DamageType": "P", 
+        "Price": 45, 
+        "Special": []
+    }, 
+    "Spear": {
+        "Proficiency": "Simple", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "1d8", 
+        "DamageSmall": "1d6", 
+        "Weight": null, 
+        "Critical": "x3", 
+        "DamageType": "P", 
+        "Price": 2, 
+        "Range": 20, 
+        "Special": []
+    }, 
+    "Cestus": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d4", 
+        "DamageSmall": "1d3", 
+        "Weight": 1, 
+        "Critical": "19-20/x2", 
+        "DamageType": "BP", 
+        "Price": 5, 
+        "Special": []
+    }, 
+    "LightMace": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 4, 
+        "Critical": "x2", 
+        "DamageType": "B", 
+        "Price": 5, 
+        "Special": []
+    }, 
+    "Sickle": {
+        "Proficiency": "Simple", 
+        "Encumberance": "Light", 
+        "DamageMedium": "1d6", 
+        "DamageSmall": "1d4", 
+        "Weight": 2, 
+        "Critical": "x2", 
+        "DamageType": "S", 
+        "Price": 6, 
+        "Special": [
+            "Trip"
+        ]
+    }, 
+    "Falchion": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "2d4", 
+        "DamageSmall": "1d6", 
+        "Weight": 8, 
+        "Critical": "18-20/x2", 
+        "DamageType": "S", 
+        "Price": 75, 
+        "Special": []
+    }, 
+    "Ranseur": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "2d4", 
+        "DamageSmall": "1d6", 
+        "Weight": 1, 
+        "Critical": "x3", 
+        "DamageType": "P", 
+        "Price": 10, 
+        "Special": [
+            "Disarm", 
+            "Reach"
+        ]
+    }, 
+    "Guisarme": {
+        "Proficiency": "Martial", 
+        "Encumberance": "TwoHanded", 
+        "DamageMedium": "2d4", 
+        "DamageSmall": "1d6", 
+        "Weight": 12, 
+        "Critical": "x3", 
+        "DamageType": "S", 
+        "Price": 9, 
+        "Special": [
+            "Reach", 
+            "Trip"
+        ]
+    }
+}
