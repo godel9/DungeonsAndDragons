@@ -8,4 +8,31 @@
     },
     "Size": "Medium"
 }
+"Elf": {
+    "Speed": 30,
+    "AbilityModifier": {
+        "DEX": 2,
+        "INT": 2,
+        "CON": -2
+    }
+    "Size": "Medium"
+},
+"Gnome": {
+    "Speed": 20,
+    "AbilityModifier": {
+        "CON": 2,
+        "CAR": 2,
+        "STR": -2
+    }
+    "Size": "Small"
+},
+"Halfling": {
+    "Speed": 20,
+    "AbilityModifier": {
+        "CON": 2,
+        "CAR": 2,
+        "STR": -2
+    }
+    "Size": "Small"
+}
 }
