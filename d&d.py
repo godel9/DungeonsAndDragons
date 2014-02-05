@@ -14,6 +14,38 @@
 #	DamageType: B,P,S,etc. (can use multiple to stack)
 #	Special:
 
+#Unit:
+#Name	[CR]
+#[XP]
+#Race Classes...
+#Lineage (ex. Medium Humanoid (elf, human))
+#Init
+#Senses
+#DEFENSE
+#	AC: Reg, touch, flat-footed (armor modifier, dex)
+#	HP: actual (hd)
+#	Fort, Reflex & Will: Bonuses (ex. x2 vs. enchantments)
+#	Immunities (if any)
+#OFFENSE
+#	Speed
+#	Melee:
+#		Weapons w/ damage ...
+#	Ranged:
+#		Weapons w/ damage ...
+#	Special Attacks:
+#		...
+#	[Tactics]
+#STATISTICS
+#	STR, DEX, CON, INT, WIS, CHA
+#	Base Attack Bonus
+#	Combat Maneuver Bonus
+#	Combat Maneuver Defense
+#	Feats...
+#	Skills...
+#	Languages...
+#	SQ...
+#	Combat Gear...
+
 import random
 from numpy.random import binomial
 import re
@@ -134,37 +166,46 @@ SizesList = ['Fine','Diminutive','Tiny','Small','Medium','Large','Huge','Gargant
 #Effects:
 
 class Unit:
-	def __init__(self, Name, Level, Race, Class, Equipment=[], Base={}):
+	def __init__(self, Name, Level, Race, Class, Base={}):
 		self.Name = Name
 		self.Level = Level
 		self.Race = Race
 		self.Class = Class
-		for e in Equipment:
-			self.equip(e)
-		self.Ability = {}
 		if 'Ability' in Base:
-			for key,value in Base['Ability'].iteritems():
-				self.Ability[key] = value
+			self.Ability = dict_clone(Base['Ability'])
 		else:
 			abilities = sorted([genAbility() for count in range(6)])
 			abilities.reverse()
-			for i in range(6):
-				self.Ability[Class.AbilityPriority[i]] = abilities[i]		
+			self.Ability = dict_clone(dict(zip(Class.AbilityPriority,abilities)))
 		if 'Skill' in Base:
-			self.Skill = {}
-			for key,value in Base['Skill'].iteritems():
-				self[key] = value
+			self.Skill = dict_clone(Base['Skill'])
 		else:
 			skillPoints = Level*(Class.SkillRank + modifier(self.getAbility('INT')))
 			self.Skill = randomChoice(skillPoints,Class.ClassSkills)
+		
 		if 'Equipment' in Base:
-			pass
+			self.Armor = None
+			self.Shield = None
+			if 'Armor' in Base['Equipment']:
+				self.Armor = Base['Equipment']['Armor']
+			if 'Shield' in Base['Equipment']:
+				self.Shield = Base['Equipment']['Shield']
+			self.Melee = Base['Equipment']['Melee']
+			self.Ranged = Base['Equipment']['Ranged']	
 		else:
 			self.Gold = roll(Class.StartingWealth)
-		self.Armor = None
-		self.Shield = None
+			self.Armor = None
+			self.Shield = None
+			self.Melee = []
+			self.Ranged = []
+		
+	def addWeapon(self,weapon):
+		#TODO implement a weapon factory here!!
+		if weapon.Encumberance == 'Ranged':
+			self.Ranged.append(weapon)
+		else:
+			self.Melee.append(weapon)
 
-	
 	def getAbility(self, ability):
 		tmp = self.Ability[ability]
 		if ability in self.Race.AbilityModifier:
@@ -186,7 +227,7 @@ class Unit:
 			tmp -= 2*abs(self_index - weapon_index)
 		return tmp
 
-	def isProficient(self,weapon,primary=True):
+	def isProficient(self,weapon):
 		if weapon.Proficiency in self.Class.WeaponProficiency:
 			return True
 		try:
@@ -208,39 +249,6 @@ class Unit:
 			pass
 		return tmp
 
-	def useWeapon(self,AC,weapon):
-		r = d(1,20)
-		tot = 0
-		base = self.getAttackBonus(weapon) - AC
-		if r == 1:
-			return "Critical Failure"
-		if r == 20 or r + base >= 10:
-			dmg = roll(weapon.Damage.split('/')[0])
-			tot += crit(weapon.Critical,r)*dmg
-		if "Double" in weapon.Special:
-			r = d(1,20)
-			if r == 1:
-				return "Critical Failure"
-			if r==20 or r + base >= 10:
-				dmg = roll(weapon.Damage.split('/')[1])
-				tot += crit(weapon.Critical,r)*dmg
-		return tot
-
-	def defend(self):
-		pass
-
-	def attack(self):
-		pass
-
-	def equip(self, item):
-		pass
-
-	def skillCheck(self, skill):
-		pass
-
-	def save(self, kind):
-		pass
-
 	def toString(self):
 		tmp = 'Name: %s\n' % self.Name
 		tmp += 'Level %i %s %s\n' % (self.Level,self.Race.Name,self.Class.Name)
@@ -251,13 +259,12 @@ class Unit:
 			if modifier(self.getAbility(ability)) >= 0:
 				tmp += '+'
 			tmp += str(modifier(self.getAbility(ability))) + ')\n'
-		tmp += 'Base Attack Bonus: %i\n' % self.Class.BaseAttackBonus[self.Level]
+		tmp += 'Base Attack Bonus: %i\n' % self.Class.BaseAttackBonus[self.Level-1]
 		tmp += 'Armor Class: %i\n' % self.getArmorClass()
 		tmp += 'Skills:\n'
 		for skill in self.Skill:
 			tmp += '\t%s: %i\n' % (skill,self.Skill[skill])
 		return tmp
-
 
 def WeaponFactory(base,size='Medium'):
 	tmp = Struct()
@@ -325,7 +332,6 @@ if __name__ == '__main__':
 	#for a in my_unit.Skill:
 	#	print a,my_unit.Skill[a]
 	print my_unit.toString()
-	print my_unit.useWeapon(10,greatsword)
 
 
 
