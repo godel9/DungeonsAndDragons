@@ -25,10 +25,10 @@
     "ClassSkills": [
         "Climb",
         "Craft",
-        "Handle_Animal",
+        "HandleAnimal",
         "Intimidate",
-        "Knowledge_Dungeoneering",
-        "Knowledge_Engineering",
+        "KnowledgeDungeoneering",
+        "KnowledgeEngineering",
         "Profession",
         "Ride",
         "Survival",

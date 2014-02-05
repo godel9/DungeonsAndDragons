@@ -2,7 +2,7 @@
 "Dwarf": {
     "Speed": 20,
     "AbilityModifier": {
-        "CAR": -2,
+        "CHA": -2,
         "WIS": 2,
         "CON": 2
     },
@@ -21,7 +21,7 @@
     "Speed": 20,
     "AbilityModifier": {
         "CON": 2,
-        "CAR": 2,
+        "CHA": 2,
         "STR": -2
     },
     "Size": "Small"
@@ -30,7 +30,7 @@
     "Speed": 20,
     "AbilityModifier": {
         "CON": 2,
-        "CAR": 2,
+        "CHA": 2,
         "STR": -2
     },
     "Size": "Small"

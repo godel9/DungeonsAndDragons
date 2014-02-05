@@ -145,6 +145,44 @@ SizeModifierTable = {
 	'Fine': 8,
 }
 SizesList = ['Fine','Diminutive','Tiny','Small','Medium','Large','Huge','Gargantuan','Colossal']
+SkillAbility = {
+	'Acrobatics': 'DEX',
+	'Appraise': 'INT',
+	'Bluff': 'CHA',
+	'Climb': 'STR',
+	'Craft': 'INT',
+	'Diplomacy': 'CHA',
+	'DisableDevice': 'DEX',
+	'Disguise': 'CHA',
+	'EscapeArtist': 'DEX',
+	'Fly': 'DEX',
+	'HandleAnimal': 'CHA',
+	'Heal': 'WIS',
+	'Intimidate': 'CHA',
+	'KnowledgeArcana': 'INT',
+	'KnowledgeDungeoneering': 'INT',
+	'KnowledgeEngineering': 'INT',
+	'KnowledgeGeography': 'INT',
+	'KnowledgeHistory': 'INT',
+	'KnowledgeLocal': 'INT',
+	'KnowledgeNature': 'INT',
+	'KnowledgeNobility': 'INT',
+	'KnowledgePlanes': 'INT',
+	'KnowledgeReligion': 'INT',
+	'Linguistics': 'INT',
+	'Perception': 'WIS',
+	'Perform': 'CHA',
+	'Profession': 'WIS',
+	'Ride': 'DEX',
+	'SenseMotive': 'WIS',
+	'SleightOfHand': 'DEX',
+	'Spellcraft': 'INT',
+	'Stealth': 'DEX',
+	'Survival': 'WIS',
+	'Swim': 'STR',
+	'UseMagicDevice': 'CHA'
+}
+SkillArmorCheck = ['Acrobatics','Climb','DisableDevice','EscapeArtist','Fly','Ride','SleightOfHand','Stealth','Swim']
 #Race:
 #	AbilityModifier <Dict>
 #	Effects <List>
@@ -165,18 +203,26 @@ class Unit:
 		self.Level = Level
 		self.Race = Race
 		self.Class = Class
+		self.Size= Race.Size
+		self.Speed = Race.Speed
+		try:
+			self.NaturalArmor = Race.NaturalArmor
+		except Exception:
+			self.NaturalArmor = 0
 		if 'Ability' in Base:
 			self.Ability = dict_clone(Base['Ability'])
 		else:
 			abilities = sorted([genAbility() for count in range(6)])
 			abilities.reverse()
 			self.Ability = dict_clone(dict(zip(Class.AbilityPriority,abilities)))
+		#Apply Racial Bonuses
+		for attribute,bonus in Race.AbilityModifier.iteritems():
+			self.Ability[attribute] += bonus
 		if 'Skill' in Base:
 			self.Skill = dict_clone(Base['Skill'])
 		else:
-			skillPoints = Level*(Class.SkillRank + modifier(self.getAbility('INT')))
+			skillPoints = Level*(Class.SkillRank + modifier(self.Ability['INT']))
 			self.Skill = randomChoice(skillPoints,Class.ClassSkills)
-		
 		if 'Equipment' in Base:
 			self.Armor = None
 			self.Shield = None
@@ -202,24 +248,25 @@ class Unit:
 		tmp.DamageType = base.DamageType
 		tmp.Critical = base.Critical
 		tmp.Special = base.Special
+		tmp.Name = base.Name
 		try:
 			tmp.Affinity = base.Affinity
 		except Exception:
 			pass
-		if self.Race.Size == 'Medium':
+		if self.Size == 'Medium':
 			tmp.Damage = base.DamageMedium
-			tmp.Size = self.Race.Size
-		elif self.Race.Size == 'Small':
+			tmp.Size = self.Size
+		elif self.Size == 'Small':
 			tmp.Damage = base.DamageSmall
-			tmp.Size = self.Race.Size
-		elif self.Race.Size in ['Colossal', 'Gargantuan', 'Huge', 'Large']:
+			tmp.Size = self.Size
+		elif self.Size in ['Colossal', 'Gargantuan', 'Huge', 'Large']:
 			if base.DamageMedium in LargeWeaponDamage:
 				tmp.Damage = LargeWeaponDamage[base.DamageMedium]
 				tmp.Size = 'Large'
 			else:
 				tmp.Damage = base.DamageMedium
 				tmp.Size = 'Medium'
-		elif self.Race.Size in ['Tiny', 'Diminutive', 'Fine']:
+		elif self.Size in ['Tiny', 'Diminutive', 'Fine']:
 			if base.DamageMedium in TinyWeaponDamage:
 				tmp.Damage = TinyWeaponDamage[base.DamageMedium]
 				tmp.Size = 'Tiny'
@@ -233,19 +280,19 @@ class Unit:
 		else:
 			self.Melee.append(tmp)
 
-	def getAbility(self, ability):
-		tmp = self.Ability[ability]
-		if ability in self.Race.AbilityModifier:
-			tmp += self.Race.AbilityModifier[ability]	
-		return tmp
+	#def getAbility(self, ability):
+	#	tmp = self.Ability[ability]
+	#	if ability in self.Race.AbilityModifier:
+	#		tmp += self.Race.AbilityModifier[ability]	
+	#	return tmp
 
 	def getAttackBonus(self,weapon):
 		BaseAttackBonus = self.Class.BaseAttackBonus[self.Level-1]
-		SizeModifier = SizeModifierTable[self.Race.Size]
+		SizeModifier = SizeModifierTable[self.Size]
 		if weapon.Encumberance != "Ranged":
-			tmp = BaseAttackBonus + modifier(self.getAbility('STR')) + SizeModifier
+			tmp = BaseAttackBonus + modifier(self.Ability['STR']) + SizeModifier
 		else:
-			tmp = BaseAttackBonus + modifier(self.getAbility('DEX')) + SizeModifier
+			tmp = BaseAttackBonus + modifier(self.Ability['DEX']) + SizeModifier
 		if not self.isProficient(weapon):
 			tmp -= 4
 		if self.Race.Size != weapon.Size:
@@ -263,34 +310,42 @@ class Unit:
 			return False
 
 	def getArmorClass(self,FlatFoot=False):
-		tmp = 10
+		tmp = 10 + self.NaturalArmor
 		if self.Armor:
 			tmp += self.Armor.Bonus
 		if self.Shield:
 			tmp += self.Shield.Bonus
 		if not FlatFoot:
-			tmp += modifier(self.getAbility('DEX'))
-		try:
-			tmp += self.Race.NaturalArmor
-		except Exception:
-			pass
+			tmp += modifier(self.Ability['DEX'])
 		return tmp
 
+	def getSkill(self,skill):
+		return self.Skill[skill] + modifier(self.Ability[SkillAbility[skill]])
+
 	def toString(self):
-		tmp = 'Name: %s\n' % self.Name
+		tmp =  'Name: %s\n' % self.Name
 		tmp += 'Level %i %s %s\n' % (self.Level,self.Race.Name,self.Class.Name)
-		tmp += 'Gold: %i\n' % self.Gold
-		tmp += 'Attributes:\n'
-		for ability in self.Ability:
-			tmp += '\t%s: %i (' % (ability,self.getAbility(ability))
-			if modifier(self.getAbility(ability)) >= 0:
-				tmp += '+'
-			tmp += str(modifier(self.getAbility(ability))) + ')\n'
-		tmp += 'Base Attack Bonus: %i\n' % self.Class.BaseAttackBonus[self.Level-1]
-		tmp += 'Armor Class: %i\n' % self.getArmorClass()
-		tmp += 'Skills:\n'
-		for skill in self.Skill:
-			tmp += '\t%s: %i\n' % (skill,self.Skill[skill])
+		tmp += 'DEFENSE:\n'
+		tmp += '\tAC: %i, flat-footed %i\n' % (self.getArmorClass(),self.getArmorClass(FlatFoot=True))
+		#TODO: HP & Saves
+		tmp += 'OFFENSE:\n'
+		tmp += '\tSpeed: %i\n' % self.Speed
+		tmp += '\tMelee: '
+		if len(self.Melee) == 0:
+			tmp += '<None>'
+		else:
+			tmp += '\n\t\t'.join(['%s +%i (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Melee])
+		tmp += '\n\tRanged: '
+		if len(self.Ranged) == 0:
+			tmp += '<None>'
+		else:
+			tmp += '\n\t\t'.join(['%s +%i (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Ranged])
+		tmp += '\nSTATISTICS:\n'
+		tmp += '\t'+', '.join([a + ' ' + str(b) for (a,b) in self.Ability.iteritems()]) + '\n'
+		tmp += '\tBase Attack Bonus: %i\n' % self.Class.BaseAttackBonus[self.Level-1]
+		tmp += '\tSkills:\n'
+		for skill in self.Skill.keys():
+			tmp += '\t\t%s +%i\n' % (skill,self.getSkill(skill))
 		return tmp
 
 if __name__ == '__main__':
@@ -315,7 +370,7 @@ if __name__ == '__main__':
 
 	dwarf = Races['Dwarf']
 	fighter = Classes['Fighter']
-	my_unit = Unit("Tyler", 3, dwarf, fighter)
+	my_unit = Unit("Tyler", 1, dwarf, fighter)
 	my_unit.addWeapon(Weapons['Greatsword'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
