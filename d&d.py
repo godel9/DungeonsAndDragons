@@ -1,9 +1,3 @@
-#Player Object (Race, Class, Level, etc.) and List of Effects
-#Race Object: applies racial bonuses/abilities
-
-#Item Objects:
-#Type: Weapon, Armor, Shield, etc
-
 #Weapon:
 #	Proficiency: Simple, Martial, Exotic
 #	Encumberance: Light, One-Handed, Two-Handed, Ranged
