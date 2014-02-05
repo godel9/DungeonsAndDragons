@@ -7,14 +7,14 @@
         "CON": 2
     },
     "Size": "Medium"
-}
+},
 "Elf": {
     "Speed": 30,
     "AbilityModifier": {
         "DEX": 2,
         "INT": 2,
         "CON": -2
-    }
+    },
     "Size": "Medium"
 },
 "Gnome": {
@@ -23,7 +23,7 @@
         "CON": 2,
         "CAR": 2,
         "STR": -2
-    }
+    },
     "Size": "Small"
 },
 "Halfling": {
@@ -32,7 +32,7 @@
         "CON": 2,
         "CAR": 2,
         "STR": -2
-    }
+    },
     "Size": "Small"
 }
 }

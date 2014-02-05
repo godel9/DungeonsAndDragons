@@ -199,7 +199,7 @@ class Unit:
 			self.Melee = []
 			self.Ranged = []
 		
-	def addWeapon(self,weapon):
+	def addWeapon(self,base):
 		tmp = Struct()
 		tmp.Proficiency = base.Proficiency
 		tmp.Encumberance = base.Encumberance
