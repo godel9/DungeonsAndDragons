@@ -200,11 +200,44 @@ class Unit:
 			self.Ranged = []
 		
 	def addWeapon(self,weapon):
-		#TODO implement a weapon factory here!!
-		if weapon.Encumberance == 'Ranged':
-			self.Ranged.append(weapon)
+		tmp = Struct()
+		tmp.Proficiency = base.Proficiency
+		tmp.Encumberance = base.Encumberance
+		tmp.Weight = base.Weight
+		tmp.Price = base.Price
+		tmp.DamageType = base.DamageType
+		tmp.Critical = base.Critical
+		tmp.Special = base.Special
+		try:
+			tmp.Affinity = base.Affinity
+		except Exception:
+			pass
+		if self.Race.Size == 'Medium':
+			tmp.Damage = base.DamageMedium
+			tmp.Size = self.Race.Size
+		elif self.Race.Size == 'Small':
+			tmp.Damage = base.DamageSmall
+			tmp.Size = self.Race.Size
+		elif self.Race.Size in ['Colossal', 'Gargantuan', 'Huge', 'Large']:
+			if base.DamageMedium in LargeWeaponDamage:
+				tmp.Damage = LargeWeaponDamage[base.DamageMedium]
+				tmp.Size = 'Large'
+			else:
+				tmp.Damage = base.DamageMedium
+				tmp.Size = 'Medium'
+		elif self.Race.Size in ['Tiny', 'Diminutive', 'Fine']:
+			if base.DamageMedium in TinyWeaponDamage:
+				tmp.Damage = TinyWeaponDamage[base.DamageMedium]
+				tmp.Size = 'Tiny'
+			else:
+				tmp.Damage = base.DamageSmall
+				tmp.Size = 'Small'
 		else:
-			self.Melee.append(weapon)
+			raise Exception
+		if tmp.Encumberance == 'Ranged':
+			self.Ranged.append(tmp)
+		else:
+			self.Melee.append(tmp)
 
 	def getAbility(self, ability):
 		tmp = self.Ability[ability]
@@ -266,43 +299,6 @@ class Unit:
 			tmp += '\t%s: %i\n' % (skill,self.Skill[skill])
 		return tmp
 
-def WeaponFactory(base,size='Medium'):
-	tmp = Struct()
-	tmp.Proficiency = base.Proficiency
-	tmp.Encumberance = base.Encumberance
-	tmp.Weight = base.Weight
-	tmp.Price = base.Price
-	tmp.DamageType = base.DamageType
-	tmp.Critical = base.Critical
-	tmp.Special = base.Special
-	try:
-		tmp.Affinity = base.Affinity
-	except Exception:
-		pass
-	if size == 'Medium':
-		tmp.Damage = base.DamageMedium
-		tmp.Size = size
-	elif size == 'Small':
-		tmp.Damage = base.DamageSmall
-		tmp.Size = size
-	elif size in ['Colossal', 'Gargantuan', 'Huge', 'Large']:
-		if base.DamageMedium in LargeWeaponDamage:
-			tmp.Damage = LargeWeaponDamage[base.DamageMedium]
-			tmp.Size = 'Large'
-		else:
-			tmp.Damage = base.DamageMedium
-			tmp.Size = 'Medium'
-	elif size in ['Tiny', 'Diminutive', 'Fine']:
-		if base.DamageMedium in TinyWeaponDamage:
-			tmp.Damage = TinyWeaponDamage[base.DamageMedium]
-			tmp.Size = 'Tiny'
-		else:
-			tmp.Damage = base.DamageSmall
-			tmp.Size = 'Small'
-	else:
-		raise Exception
-	return tmp
-
 if __name__ == '__main__':
 	import json
 	def loadData(filename):
@@ -326,7 +322,7 @@ if __name__ == '__main__':
 	dwarf = Races['Dwarf']
 	fighter = Classes['Fighter']
 	my_unit = Unit("Tyler", 3, dwarf, fighter)
-	greatsword = WeaponFactory(Weapons['Greatsword'])
+	my_unit.addWeapon(Weapons['Greatsword'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
 	#for a in my_unit.Skill:
