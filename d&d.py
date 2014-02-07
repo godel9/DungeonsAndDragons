@@ -40,6 +40,18 @@
 #	SQ...
 #	Combat Gear...
 
+
+
+#Feats:
+#Acrobatic: {
+#	required: {},
+#	gives: {
+#		skill: {
+#			Acrobatics: 2,
+#			Fly: 2
+#		}
+
+
 import random
 from numpy.random import binomial
 import re
@@ -283,7 +295,7 @@ class Unit:
 	#def getAbility(self, ability):
 	#	tmp = self.Ability[ability]
 	#	if ability in self.Race.AbilityModifier:
-	#		tmp += self.Race.AbilityModifier[ability]	
+	#		tmp += self.Race.AbilityModifier[ability]
 	#	return tmp
 
 	def getAttackBonus(self,weapon):
