@@ -299,19 +299,19 @@ class Unit:
 	#	return tmp
 
 	def getAttackBonus(self,weapon):
-		BaseAttackBonus = self.Class.BaseAttackBonus[self.Level-1]
-		SizeModifier = SizeModifierTable[self.Size]
+		BaseAttackBonus = self.Class.BaseAttackBonus[self.Level-1].replace('+','').split('/')
+		tmp = SizeModifierTable[self.Size]
 		if weapon.Encumberance != "Ranged":
-			tmp = BaseAttackBonus + modifier(self.Ability['STR']) + SizeModifier
+			tmp += modifier(self.Ability['STR'])
 		else:
-			tmp = BaseAttackBonus + modifier(self.Ability['DEX']) + SizeModifier
+			tmp += modifier(self.Ability['DEX'])
 		if not self.isProficient(weapon):
 			tmp -= 4
 		if self.Race.Size != weapon.Size:
 			self_index = SizesList.index(self.Race.Size)
 			weapon_index = SizesList.index(weapon.Size)
 			tmp -= 2*abs(self_index - weapon_index)
-		return tmp
+		return '/'.join(map(lambda x: '+' + str(int(x)+tmp), BaseAttackBonus))
 
 	def isProficient(self,weapon):
 		if weapon.Proficiency in self.Class.WeaponProficiency:
@@ -346,7 +346,7 @@ class Unit:
 		if len(self.Melee) == 0:
 			tmp += '<None>'
 		else:
-			tmp += '\n\t\t'.join(['%s +%i (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Melee])
+			tmp += '\n\t\t'.join(['%s %s (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Melee])
 		tmp += '\n\tRanged: '
 		if len(self.Ranged) == 0:
 			tmp += '<None>'
@@ -354,7 +354,7 @@ class Unit:
 			tmp += '\n\t\t'.join(['%s +%i (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Ranged])
 		tmp += '\nSTATISTICS:\n'
 		tmp += '\t'+', '.join([a + ' ' + str(b) for (a,b) in self.Ability.iteritems()]) + '\n'
-		tmp += '\tBase Attack Bonus: %i\n' % self.Class.BaseAttackBonus[self.Level-1]
+		tmp += '\tBase Attack Bonus: %s\n' % self.Class.BaseAttackBonus[self.Level-1]
 		tmp += '\tSkills:\n'
 		for skill in self.Skill.keys():
 			tmp += '\t\t%s +%i\n' % (skill,self.getSkill(skill))
@@ -382,7 +382,7 @@ if __name__ == '__main__':
 
 	dwarf = Races['Dwarf']
 	fighter = Classes['Fighter']
-	my_unit = Unit("Tyler", 1, dwarf, fighter)
+	my_unit = Unit("Tyler", 8, dwarf, fighter)
 	my_unit.addWeapon(Weapons['Greatsword'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
