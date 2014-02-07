@@ -93,6 +93,12 @@ def genAbility():
 def modifier(ability):
 	return int((ability - 10)/2)
 
+def compound(dice,mul):
+	a,b = tuple(dice.split('d'))
+	if a == '':
+		return str(mul) + dice
+	return '%id%i' % (mul*int(a),b)
+
 roll_regex = re.compile(r'([0-9]+\*)?([0-9]+)d([0-9]+)(\+[0-9]+|-[0-9]+)?')
 def roll(die):
 	tmp = roll_regex.match(die)
@@ -292,11 +298,17 @@ class Unit:
 		else:
 			self.Melee.append(tmp)
 
-	#def getAbility(self, ability):
-	#	tmp = self.Ability[ability]
-	#	if ability in self.Race.AbilityModifier:
-	#		tmp += self.Race.AbilityModifier[ability]
-	#	return tmp
+	def getFortSave(self):
+		return int(self.Class.Fort[self.Level-1]) + modifier(self.Ability['CON'])
+
+	def getRefSave(self):
+		return int(self.Class.Ref[self.Level-1]) + modifier(self.Ability['DEX'])
+
+	def getWillSave(self):
+		return int(self.Class.Will[self.Level-1]) + modifier(self.Ability['WIS'])
+
+	def getHP(self):
+		return compound(self.Class.HD,self.Level) + '+' + str(modifier(self.Ability['CON']))
 
 	def getAttackBonus(self,weapon):
 		BaseAttackBonus = self.Class.BaseAttackBonus[self.Level-1].replace('+','').split('/')
@@ -339,7 +351,8 @@ class Unit:
 		tmp += 'Level %i %s %s\n' % (self.Level,self.Race.Name,self.Class.Name)
 		tmp += 'DEFENSE:\n'
 		tmp += '\tAC: %i, flat-footed %i\n' % (self.getArmorClass(),self.getArmorClass(FlatFoot=True))
-		#TODO: HP & Saves
+		tmp += '\tHP: %s\n' % self.getHP()
+		tmp += '\tFort +%i, Ref +%i, Will +%i\n' % (self.getFortSave(),self.getRefSave(),self.getWillSave())
 		tmp += 'OFFENSE:\n'
 		tmp += '\tSpeed: %i\n' % self.Speed
 		tmp += '\tMelee: '
