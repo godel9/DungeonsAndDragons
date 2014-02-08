@@ -214,6 +214,29 @@ SkillArmorCheck = ['Acrobatics','Climb','DisableDevice','EscapeArtist','Fly','Ri
 #	ClassSkills <List>
 
 #Effects:
+def interpret(unit,query):
+	return query
+
+def applyTemplate(template,unit):
+	for key,val in template.iteritems():
+		tmp = unit.__dict__
+		if ':' in key:
+			path, cmd = tuple(key.split(':'))
+			path = path.split('.')
+		else:
+			path = key.split('.')
+			cmd = ''
+		for x in path[:-1]:
+			tmp = tmp[x]
+		q = interpret(unit,val)
+		if cmd == '' or cmd == 'set':
+			tmp[path[-1]] = q
+		elif cmd == 'inc':
+			tmp[path[-1]] += q
+		elif cmd == 'ext':
+			tmp[path[-1]].extend(q)
+		else:
+			raise Exception
 
 class Unit:
 	def __init__(self, Name, Level, Race, Class, Base={}):
@@ -402,8 +425,9 @@ if __name__ == '__main__':
 	#for a in my_unit.Skill:
 	#	print a,my_unit.Skill[a]
 	print my_unit.toString()
-
-
+	#print my_unit.__dict__
+	applyTemplate({'Ability.STR:inc': 2},my_unit)
+	print my_unit.toString()
 
 
 
