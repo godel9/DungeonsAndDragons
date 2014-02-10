@@ -8,6 +8,15 @@
     },
     "Size": "Medium"
 },
+"Drow": {
+    "Speed": 30,
+    "AbilityModifier": {
+	"DEX": 2,
+	"CHA": 2,
+	"CON": -2
+    },
+    "Size": "Medium"
+},
 "Elf": {
     "Speed": 30,
     "AbilityModifier": {

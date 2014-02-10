@@ -246,6 +246,12 @@ class Unit:
 		self.Class = Class
 		self.Size= Race.Size
 		self.Speed = Race.Speed
+		
+		self.SaveEffects = []
+		self.DefenseEffects = []
+		self.AttackEffects = []
+		self.GeneralEffects = []
+		
 		try:
 			self.NaturalArmor = Race.NaturalArmor
 		except Exception:
@@ -416,18 +422,19 @@ if __name__ == '__main__':
 	Weapons = loadData('weapons.json')
 
 
-	dwarf = Races['Dwarf']
-	fighter = Classes['Fighter']
-	my_unit = Unit("Tyler", 8, dwarf, fighter)
-	my_unit.addWeapon(Weapons['Greatsword'])
+	drow = Races['Drow']
+	ranger = Classes['Ranger']
+	my_unit = Unit("Tyler", 3, drow, ranger)
+	my_unit.addWeapon(Weapons['Glaive'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
 	#for a in my_unit.Skill:
 	#	print a,my_unit.Skill[a]
 	print my_unit.toString()
 	#print my_unit.__dict__
-	applyTemplate({'Ability.STR:inc': 2},my_unit)
-	print my_unit.toString()
+	
+	#applyTemplate({'Ability.STR:inc': 2},my_unit)
+	#print my_unit.toString()
 
 
 
