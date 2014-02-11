@@ -235,6 +235,8 @@ def applyTemplate(template,unit):
 			tmp[path[-1]] += q
 		elif cmd == 'ext':
 			tmp[path[-1]].extend(q)
+		elif cmd == 'app':
+			tmp[path[-1]].append(q)
 		else:
 			raise Exception
 
@@ -285,7 +287,7 @@ class Unit:
 			self.Shield = None
 			self.Melee = []
 			self.Ranged = []
-		
+
 	def addWeapon(self,base):
 		tmp = Struct()
 		tmp.Proficiency = base.Proficiency
@@ -337,7 +339,14 @@ class Unit:
 		return int(self.Class.Will[self.Level-1]) + modifier(self.Ability['WIS'])
 
 	def getHP(self):
-		return compound(self.Class.HD,self.Level) + '+' + str(modifier(self.Ability['CON']))
+		tmp = compound(self.Class.HD,self.Level)
+		m = modifier(self.Ability['CON'])
+		if m == 0:
+			return tmp
+		elif m > 0:
+			return tmp + '+' + str(m)
+		else:
+			return tmp + str(m)
 
 	def getAttackBonus(self,weapon):
 		BaseAttackBonus = self.Class.BaseAttackBonus[self.Level-1].replace('+','').split('/')
@@ -364,16 +373,24 @@ class Unit:
 
 	def getArmorClass(self,FlatFoot=False):
 		tmp = 10 + self.NaturalArmor
+		dex_mod = modifier(self.Ability['DEX'])
 		if self.Armor:
 			tmp += self.Armor.Bonus
+			dex_mod = min(self.Armor.MaxDex,dex_mod)
 		if self.Shield:
 			tmp += self.Shield.Bonus
 		if not FlatFoot:
-			tmp += modifier(self.Ability['DEX'])
+			tmp += dex_mod
 		return tmp
 
 	def getSkill(self,skill):
-		return self.Skill[skill] + modifier(self.Ability[SkillAbility[skill]])
+		tmp = self.Skill[skill] + modifier(self.Ability[SkillAbility[skill]])
+		if SkillAbility[skill] == 'DEX' or SkillAbility[skill] == 'STR':
+			if self.Armor:
+				tmp += self.Armor.ArmorCheckPenalty
+			if self.Shield:
+				tmp += self.Armor.ArmorCheckPenalty
+		return tmp
 
 	def toString(self):
 		tmp =  'Name: %s\n' % self.Name
@@ -381,8 +398,12 @@ class Unit:
 		tmp += 'DEFENSE:\n'
 		tmp += '\tAC: %i, flat-footed %i\n' % (self.getArmorClass(),self.getArmorClass(FlatFoot=True))
 		tmp += '\tHP: %s\n' % self.getHP()
-		tmp += '\tFort +%i, Ref +%i, Will +%i\n' % (self.getFortSave(),self.getRefSave(),self.getWillSave())
-		tmp += 'OFFENSE:\n'
+		tmp += '\tFort +%i, Ref +%i, Will +%i' % (self.getFortSave(),self.getRefSave(),self.getWillSave())
+		if self.SaveEffects:
+			tmp += ';' + ','.join(self.SaveEffects)
+		if self.DefenseEffects:
+			tmp += '\tDefensive Abilities: %s' % ','.join(self.DefenseEffects)
+		tmp += '\nOFFENSE:\n'
 		tmp += '\tSpeed: %i\n' % self.Speed
 		tmp += '\tMelee: '
 		if len(self.Melee) == 0:
@@ -394,6 +415,8 @@ class Unit:
 			tmp += '<None>'
 		else:
 			tmp += '\n\t\t'.join(['%s +%i (%s, %s)' % (w.Name, self.getAttackBonus(w), w.Damage, w.Critical) for w in self.Ranged])
+		if self.AttackEffects:
+			tmp += '\n\tSpecial Attacks: %s' % ','.join(self.AttackEffects)
 		tmp += '\nSTATISTICS:\n'
 		tmp += '\t'+', '.join([a + ' ' + str(b) for (a,b) in self.Ability.iteritems()]) + '\n'
 		tmp += '\tBase Attack Bonus: %s\n' % self.Class.BaseAttackBonus[self.Level-1]
