@@ -1,0 +1,10 @@
+{
+    "Acrobatic": {
+	"Prereq": {},
+	"Template": {
+	    "Skill.Acrobatics:inc": 2,
+	    "Skill.Fly:inc": 2
+	},
+	"Tags": []
+    }
+}

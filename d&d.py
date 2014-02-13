@@ -109,8 +109,20 @@ def roll(die):
 	b = int(tmp.group(3))
 	plus = 0
 	if tmp.group(4):
-		plus = int(tmp.group(3))
+		plus = int(tmp.group(4))
 	return mul*d(a,b) + plus
+
+def rollAvg(die):
+	tmp = roll_regex.match(die)
+	mul = 1
+	if tmp.group(1):
+		mul = float(tmp.group(1)[:-1])
+	a = float(tmp.group(2))
+	b = float(tmp.group(3))
+	plus = 0
+	if tmp.group(4):
+		plus = int(tmp.group(4))
+	return int(mul*b*a/2.0) + plus
 
 crit_regex = re.compile(r'([0-9]+-[0-9]+/)?x([0-9]+)')
 def crit(stat,roll):
@@ -213,30 +225,96 @@ SkillArmorCheck = ['Acrobatics','Climb','DisableDevice','EscapeArtist','Fly','Ri
 #	SkillRank <Int>
 #	ClassSkills <List>
 
-#Effects:
+def extract(line,unit):
+	tmp = unit.__dict__
+	if ':' in line:
+		path,cmd = tuple(line.split(':'))
+		path = path.split('.')
+	else:
+		path = line.split('.')
+		cmd = ''
+	for x in path[:-1]:
+		tmp = tmp[x]
+	return (tmp,cmd,path[-1])
+
 def interpret(unit,query):
+	if type(query) == dict:
+		return dict([(key,interpret(unit,val)) for (key,val) in query.iteritems()])
+	if type(query) == str and query[0] == '%':
+		stack = []
+		for cmd in query[1:].split(' '):
+			if '.' in cmd:
+				tmp = unit.__dict__
+				for x in cmd.split('.'):
+					if x:
+						tmp = tmp.__dict__[x] if type(tmp)==type(Struct()) else tmp[x]
+				stack.append(tmp)
+			elif cmd == '+':
+				a = int(stack.pop())
+				b = int(stack.pop())
+				stack.append(a+b)
+			elif cmd == '-':
+				a = int(stack.pop())
+				b = int(stack.pop())
+				stack.append(a-b)
+			elif cmd == '*':
+				a = int(stack.pop())
+				b = int(stack.pop())
+				stack.append(a*b)
+			elif cmd == '/':
+				a = int(stack.pop())
+				b = int(stack.pop())
+				stack.append(a/b)
+			elif cmd == '[]':
+				index = int(stack.pop())
+				ls = list(stack.pop())
+				stack.append(ls[index])
+			elif cmd == 'dup':
+				stack.append(stack[-1])
+			else:
+				stack.append(cmd)
+		return stack.pop()
 	return query
+
+def testCond(cond,unit):
+	for key,val in cond.iteritems():
+		tmp,cmd,k = extract(key,unit)
+		q = interpret(unit,val)
+		if cmd == 'in' and (k not in tmp):
+			return False
+		elif cmd == 'eq' and tmp[k] != q:
+			return False
+		elif cmd == 'gr' and tmp[k] <= q:
+			return False
+		elif cmd == 'le' and tmp[k] >= q:
+			return False
+		elif (cmd == '' or cmd == 'gre') and tmp[k] < q:
+			return False
+		elif cmd == 'leq' and tmp[k] > q:
+			return False
+	return True
 
 def applyTemplate(template,unit):
 	for key,val in template.iteritems():
-		tmp = unit.__dict__
-		if ':' in key:
-			path, cmd = tuple(key.split(':'))
-			path = path.split('.')
-		else:
-			path = key.split('.')
-			cmd = ''
-		for x in path[:-1]:
-			tmp = tmp[x]
+		tmp,cmd,k = extract(key,unit)
 		q = interpret(unit,val)
 		if cmd == '' or cmd == 'set':
-			tmp[path[-1]] = q
+			tmp[k] = q
 		elif cmd == 'inc':
-			tmp[path[-1]] += q
+			if k not in tmp:
+				tmp[k] = q
+			else:
+				tmp[k] += q
 		elif cmd == 'ext':
-			tmp[path[-1]].extend(q)
+			if k not in tmp:
+				tmp[k] = q
+			else:
+				tmp[k].extend(q)
 		elif cmd == 'app':
-			tmp[path[-1]].append(q)
+			if k not in tmp:
+				tmp[k] = [q]
+			else:
+				tmp[k].append(q)
 		else:
 			raise Exception
 
@@ -271,6 +349,7 @@ class Unit:
 			self.Skill = dict_clone(Base['Skill'])
 		else:
 			skillPoints = Level*(Class.SkillRank + modifier(self.Ability['INT']))
+			print 'Pts',skillPoints
 			self.Skill = randomChoice(skillPoints,Class.ClassSkills)
 		if 'Equipment' in Base:
 			self.Armor = None
@@ -328,6 +407,11 @@ class Unit:
 			self.Ranged.append(tmp)
 		else:
 			self.Melee.append(tmp)
+
+	def addFeat(self,feat):
+		if not testCond(feat.Prereq,self):
+			raise Exception
+		applyTemplate(feat.Template,self)
 
 	def getFortSave(self):
 		return int(self.Class.Fort[self.Level-1]) + modifier(self.Ability['CON'])
@@ -397,7 +481,7 @@ class Unit:
 		tmp += 'Level %i %s %s\n' % (self.Level,self.Race.Name,self.Class.Name)
 		tmp += 'DEFENSE:\n'
 		tmp += '\tAC: %i, flat-footed %i\n' % (self.getArmorClass(),self.getArmorClass(FlatFoot=True))
-		tmp += '\tHP: %s\n' % self.getHP()
+		tmp += '\tHP: %s (%i)\n' % (self.getHP(),rollAvg(self.getHP()))
 		tmp += '\tFort +%i, Ref +%i, Will +%i' % (self.getFortSave(),self.getRefSave(),self.getWillSave())
 		if self.SaveEffects:
 			tmp += ';' + ','.join(self.SaveEffects)
@@ -443,22 +527,27 @@ if __name__ == '__main__':
 	Classes = loadData('classes.json')
 	Races = loadData('races.json')
 	Weapons = loadData('weapons.json')
-
-
+	Feats = loadData('feats.json')
+	base = {'Ability': {
+		'STR': 14,
+		'DEX': 15,
+		'CON': 12,
+		'INT': 10,
+		'WIS': 13,
+		'CHA': 8
+	}}
 	drow = Races['Drow']
 	ranger = Classes['Ranger']
-	my_unit = Unit("Tyler", 3, drow, ranger)
-	my_unit.addWeapon(Weapons['Glaive'])
+	my_unit = Unit("Tyler", 1, drow, ranger,base)
+	my_unit.addWeapon(Weapons['Halberd'])
+	my_unit.addFeat(Feats['Acrobatic'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
 	#for a in my_unit.Skill:
 	#	print a,my_unit.Skill[a]
 	print my_unit.toString()
 	#print my_unit.__dict__
-	
-	#applyTemplate({'Ability.STR:inc': 2},my_unit)
-	#print my_unit.toString()
-
+	#print interpret(my_unit,'%1 .Class.BaseAttackBonus 1 .Level - [] +')
 
 
 
