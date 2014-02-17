@@ -6,5 +6,19 @@
 	    "Skill.Fly:inc": 2
 	},
 	"Tags": []
+    },
+    "CombatReflexes": {
+	"Prereq": {},
+	"Template": {
+	    "AttackEffects:app": "Make additional attacks of opportunity"
+	},
+	"Tags": ["Combat"]
+    },
+    "StandStill": {
+	"Prereq": {"Feats:ext": "CombatReflexes"},
+	"Template": {
+	    "AttackEffects:app": "Stop enemies from moving past you"
+	},
+	"Tags": ["Combat"]
     }
 }

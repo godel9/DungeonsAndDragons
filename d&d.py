@@ -137,8 +137,6 @@ def crit(stat,roll):
 		return int(mul)
 	return 1
 
-
-
 TinyWeaponDamage = {
 	'1d3': '1d1',
 	'1d4': '1d2',
@@ -292,6 +290,10 @@ def testCond(cond,unit):
 			return False
 		elif cmd == 'leq' and tmp[k] > q:
 			return False
+		elif cmd == 'name' and tmp[k].Name != q:
+			return False
+		elif cmd == 'ext' and all(map(lambda x: x.Name != q,tmp[k])):
+			return False
 	return True
 
 def applyTemplate(template,unit):
@@ -332,6 +334,7 @@ class Unit:
 		self.AttackEffects = []
 		self.GeneralEffects = []
 		
+		self.Feats = []
 		try:
 			self.NaturalArmor = Race.NaturalArmor
 		except Exception:
@@ -412,6 +415,7 @@ class Unit:
 		if not testCond(feat.Prereq,self):
 			raise Exception
 		applyTemplate(feat.Template,self)
+		self.Feats.append(feat)
 
 	def getFortSave(self):
 		return int(self.Class.Fort[self.Level-1]) + modifier(self.Ability['CON'])
@@ -540,7 +544,8 @@ if __name__ == '__main__':
 	ranger = Classes['Ranger']
 	my_unit = Unit("Tyler", 1, drow, ranger,base)
 	my_unit.addWeapon(Weapons['Halberd'])
-	my_unit.addFeat(Feats['Acrobatic'])
+	my_unit.addFeat(Feats['CombatReflexes'])
+	my_unit.addFeat(Feats['StandStill'])
 	#for a in ['STR', 'DEX', 'CON', 'INT', 'CAR', 'WIS']:
 	#	print a,my_unit.getAbility(a)
 	#for a in my_unit.Skill:
